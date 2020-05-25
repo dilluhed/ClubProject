@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ClubProject</string>
+    <string name="title_activity_club_page">clubPage</string>
 </resources>

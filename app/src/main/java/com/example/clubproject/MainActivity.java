@@ -2,14 +2,14 @@ package com.example.clubproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
@@ -17,92 +17,152 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     TextView text;
-    Button button;
-    RelativeLayout layout;
+    Button search;
+    LinearLayout layout;
+    TableLayout table;
+    //LinearLayout clubPage;
+
+    TextView clubNameView;
+
+    ArrayList<Element> clubs;
+
+    public String directive = "SEARCH_CLUBS";
+    public String URL = "https://searchusers.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        text = findViewById(R.id.textView);
-        button = findViewById(R.id.button);
+        //text = findViewById(R.id.textView);
+        search = findViewById(R.id.search);
         layout = findViewById(R.id.mainLayout);
+        table = findViewById(R.id.table);
 
+        //clubPage = findViewById(R.id.clubpageLayout);
+
+        clubNameView = findViewById(R.id.clubName);
+        /*
+        result1 = findViewById(R.id.result1);
+        result2 = findViewById(R.id.result2);
+        result3 = findViewById(R.id.result3);
+        result4 = findViewById(R.id.result4);
+        result5 = findViewById(R.id.result5);
+        result6 = findViewById(R.id.result6);
+        */
         //Button testButton = new Button(this);
         //RelativeLayout myLayout = new RelativeLayout(this);
         //layout.addView(testButton);
         //setContentView(layout);
 
 
-        button.setOnClickListener(new View.OnClickListener() {
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new doIt().execute();
+
+                new searchWeb("SEARCH_CLUBS","https://searchusers.com/search/valley+view+high+school").execute();
             }
         });
 
 
     }
 //change
-    public class doIt extends AsyncTask<Void, Void, Void>{
+    public class searchWeb extends AsyncTask<Void, Void, Void> {
 
-        String words = "";
-        Document doc;
+    Document doc;
 
-        @Override
-        protected Void doInBackground(Void... voids) {
 
-            try {
+    String clubNameText = "";
 
-                doc = Jsoup.connect("https://searchusers.com/search/valley+view+high+school").get();
+    public searchWeb(String methodDirective, String methodURL)
+    {
+        directive = methodDirective;
+        URL = methodURL;
+    }
 
-                //words = doc.text();
+    @Override
+    protected Void doInBackground(Void... voids) {
 
-            }
-            catch(Exception e){e.printStackTrace();
-            }
+        try {
 
+            doc = Jsoup.connect(URL).get();
+
+            //words = doc.text();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(directive == "SEARCH_CLUBS")
+        {
+            clubs  = new ArrayList<>();
             Elements elements = doc.getElementsByClass("timg");
 
-            for (Element element : elements)
-            {
-                String text = element.text();
+            for (Element element : elements) {
+                clubs.add(element);
+            }
+        }
+        else if(directive == "POST_CLUB")
+        {
+            clubs  = new ArrayList<>();
+            Elements elements = doc.getElementsByClass("hhrv");
 
-
-
-                words += text;
-                words += "\n";
-               // createButton(text);
+            for (Element element : elements) {
+                clubNameText = element.text();
             }
 
-            return null;
         }
+        return null;
+    }
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
 
-            text.setText(words);
+        //text.setText(words);
+        if(directive == "SEARCH_CLUBS")
+        {
+            for (int i = 0; i < clubs.size(); i++) {
+                createButton(clubs.get(i).text(), clubs.get(i).attributes().get("href"));
+            }
         }
-        /*
-    private Button createButton(String text)
-    {
+        else if(directive == "POST_CLUB")
+        {
+           clubNameView.getAutofillType();
+
+        }
+    }
+
+    private Button createButton(String text, final String clubURL) {
         Button clubButton = new Button(getApplicationContext());
         //button.setLayoutParams(new RelativeLayout.LayoutParams(150,150));
         clubButton.setText(text);
         //clubButton.setLayoutParams(new;
-
-        layout.addView(clubButton);
-
+        clubButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                prepareClubPage(clubURL);
+            }
+        });
+        table.addView(clubButton);
         return clubButton;
     }
 
-         */
+    public void prepareClubPage(String clubURL)
+    {
+        //new searchWeb("POST_CLUB", clubURL).execute();
+        //setContentView(R.layout.club_page);
+        Intent sendtoClubPage = new Intent(MainActivity.this,clubPage.class);
+        sendtoClubPage.putExtra("URL", clubURL);
+        startActivity(sendtoClubPage);
     }
+
+}
 
 
 }
