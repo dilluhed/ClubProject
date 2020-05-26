@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -25,14 +27,15 @@ public class MainActivity extends AppCompatActivity {
     Button search;
     LinearLayout layout;
     TableLayout table;
+    ScrollView scroll;
     //LinearLayout clubPage;
 
     TextView clubNameView;
+    EditText schoolInput;
 
-    ArrayList<Element> clubs;
+    final String BASE_URL = "https://searchusers.com/search/";
 
-    public String directive = "SEARCH_CLUBS";
-    public String URL = "https://searchusers.com";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +45,12 @@ public class MainActivity extends AppCompatActivity {
         //text = findViewById(R.id.textView);
         search = findViewById(R.id.search);
         layout = findViewById(R.id.mainLayout);
-        table = findViewById(R.id.table);
+        scroll = findViewById(R.id.scroll);
 
         //clubPage = findViewById(R.id.clubpageLayout);
 
         clubNameView = findViewById(R.id.clubName);
+        schoolInput = findViewById(R.id.schoolInput);
         /*
         result1 = findViewById(R.id.result1);
         result2 = findViewById(R.id.result2);
@@ -60,12 +64,25 @@ public class MainActivity extends AppCompatActivity {
         //layout.addView(testButton);
         //setContentView(layout);
 
+        table = findViewById(R.id.table);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String inputText = schoolInput.getText().toString();
 
-                new searchWeb("SEARCH_CLUBS","https://searchusers.com/search/valley+view+high+school").execute();
+                inputText.replace(" ", "+");
+
+                scroll.removeView(table);
+                table = new TableLayout(getApplicationContext());
+                TableLayout.LayoutParams params = new TableLayout.LayoutParams(
+                        TableLayout.LayoutParams.MATCH_PARENT,
+                        TableLayout.LayoutParams.WRAP_CONTENT
+                );
+                table.setLayoutParams(params);
+                scroll.addView(table);
+
+                new searchWeb("timg",BASE_URL + inputText + "+high+school").execute();
             }
         });
 
@@ -75,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
     public class searchWeb extends AsyncTask<Void, Void, Void> {
 
     Document doc;
-
+    public String directive = "";
+    public String URL = "https://searchusers.com";
+    ArrayList<Element> targets;
 
     String clubNameText = "";
 
@@ -88,34 +107,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected Void doInBackground(Void... voids) {
 
-        try {
-
+        try
+        {
             doc = Jsoup.connect(URL).get();
-
-            //words = doc.text();
-
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
+        targets  = new ArrayList<>();
+        Elements elements = doc.getElementsByClass(directive);
 
-        if(directive == "SEARCH_CLUBS")
+        for (Element element : elements)
         {
-            clubs  = new ArrayList<>();
-            Elements elements = doc.getElementsByClass("timg");
-
-            for (Element element : elements) {
-                clubs.add(element);
-            }
-        }
-        else if(directive == "POST_CLUB")
-        {
-            clubs  = new ArrayList<>();
-            Elements elements = doc.getElementsByClass("hhrv");
-
-            for (Element element : elements) {
-                clubNameText = element.text();
-            }
-
+            targets.add(element);
         }
         return null;
     }
@@ -123,18 +128,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-
-        //text.setText(words);
-        if(directive == "SEARCH_CLUBS")
-        {
-            for (int i = 0; i < clubs.size(); i++) {
-                createButton(clubs.get(i).text(), clubs.get(i).attributes().get("href"));
-            }
-        }
-        else if(directive == "POST_CLUB")
-        {
-           clubNameView.getAutofillType();
-
+        for (int i = 0; i < targets.size(); i++) {
+            createButton(targets.get(i).text(), targets.get(i).attributes().get("href"));
         }
     }
 

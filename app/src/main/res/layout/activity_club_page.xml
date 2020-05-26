@@ -11,12 +11,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">>
+
         <TextView
             android:id="@+id/clubName"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:text="CLUB NAME"
-            android:textSize="30sp" />
+            android:layout_height="312dp"
+            android:fontFamily="casual"
+            android:text="Loading Club..."
+            android:textAlignment="center"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/recentPost"
+            android:layout_width="match_parent"
+            android:layout_height="141dp"
+            android:text="Loading Recent Post..."
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/activityDate"
+            android:layout_width="match_parent"
+            android:layout_height="71dp"
+            android:text="Last Active: ..."
+            android:textSize="28sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>
