@@ -21,143 +21,125 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
-
-    TextView text;
+public class MainActivity extends AppCompatActivity //Main search page
+{
     Button search;
     LinearLayout layout;
     TableLayout table;
     ScrollView scroll;
-    //LinearLayout clubPage;
 
-    TextView clubNameView;
     EditText schoolInput;
 
-    final String BASE_URL = "https://searchusers.com/search/";
+    final String BASE_URL = "https://searchusers.com/search/"; //website that app is scraping through
 
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) //runs when MainActivity has started
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //text = findViewById(R.id.textView);
-        search = findViewById(R.id.search);
-        layout = findViewById(R.id.mainLayout);
-        scroll = findViewById(R.id.scroll);
+        search = findViewById(R.id.search); //search button
+        layout = findViewById(R.id.mainLayout); //main layout of the activity
+        scroll = findViewById(R.id.scroll); //the scrollView that table are placed on
 
-        //clubPage = findViewById(R.id.clubpageLayout);
+        schoolInput = findViewById(R.id.schoolInput); //user inputs school name here
 
-        clubNameView = findViewById(R.id.clubName);
-        schoolInput = findViewById(R.id.schoolInput);
-        /*
-        result1 = findViewById(R.id.result1);
-        result2 = findViewById(R.id.result2);
-        result3 = findViewById(R.id.result3);
-        result4 = findViewById(R.id.result4);
-        result5 = findViewById(R.id.result5);
-        result6 = findViewById(R.id.result6);
-        */
-        //Button testButton = new Button(this);
-        //RelativeLayout myLayout = new RelativeLayout(this);
-        //layout.addView(testButton);
-        //setContentView(layout);
+        table = findViewById(R.id.table); //the table view that is placed under scroll; buttons are put HERE
 
-        table = findViewById(R.id.table);
-
-        search.setOnClickListener(new View.OnClickListener() {
+        search.setOnClickListener(new View.OnClickListener()  //sets method to fire when search is clicked
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) //method fired when search button is clicked
+            {
                 String inputText = schoolInput.getText().toString();
 
-                inputText.replace(" ", "+");
+                inputText.replace(" ", "+"); //converts user input to url format
 
-                scroll.removeView(table);
+                scroll.removeView(table); //clears current results
                 table = new TableLayout(getApplicationContext());
-                TableLayout.LayoutParams params = new TableLayout.LayoutParams(
+                TableLayout.LayoutParams params = new TableLayout.LayoutParams
+                        (
                         TableLayout.LayoutParams.MATCH_PARENT,
                         TableLayout.LayoutParams.WRAP_CONTENT
                 );
                 table.setLayoutParams(params);
-                scroll.addView(table);
+                scroll.addView(table); //adds new table for new results
 
-                new searchWeb("timg",BASE_URL + inputText + "+high+school").execute();
-            }
+                new searchWeb("timg",BASE_URL + inputText + "+high+school").execute(); //starts a searchWeb object; search for class 'timg', under the url
+            }//end method onClick
         });
 
 
-    }
+    }//end method onCreate
 //change
-    public class searchWeb extends AsyncTask<Void, Void, Void> {
+    public class searchWeb extends AsyncTask<Void, Void, Void> //web scraper
+    {
 
-    Document doc;
-    public String directive = "";
-    public String URL = "https://searchusers.com";
-    ArrayList<Element> targets;
-
-    String clubNameText = "";
+    Document doc; //web page source code is put in here
+    public String directive = ""; //what scraper is searching for
+    public String URL = "https://searchusers.com"; //where scraper is searching
+    ArrayList<Element> targets; //elements that we need
 
     public searchWeb(String methodDirective, String methodURL)
     {
         directive = methodDirective;
         URL = methodURL;
-    }
+    }//end constructor searchWeb
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected Void doInBackground(Void... voids)
+    {
 
         try
         {
-            doc = Jsoup.connect(URL).get();
+            doc = Jsoup.connect(URL).get();//connect to URL; puts source code in the doc
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            e.printStackTrace();//in case it fails
         }
-        targets  = new ArrayList<>();
-        Elements elements = doc.getElementsByClass(directive);
+        targets  = new ArrayList<>(); // initializes new ArrayList
+        Elements elements = doc.getElementsByClass(directive); //List of elements of object Elements with the class of directive
 
-        for (Element element : elements)
+        for (Element element : elements)//converting Elements into ArrayList
         {
             targets.add(element);
         }
         return null;
-    }
+    }//end method doInBackground
 
     @Override
-    protected void onPostExecute(Void aVoid) {
+    protected void onPostExecute(Void aVoid) //This runs after doInBackground is finished
+    {
         super.onPostExecute(aVoid);
-        for (int i = 0; i < targets.size(); i++) {
+        for (int i = 0; i < targets.size(); i++)//creates a button for every user found
+        {
             createButton(targets.get(i).text(), targets.get(i).attributes().get("href"));
         }
-    }
+    }//end method onPostExecute
 
-    private Button createButton(String text, final String clubURL) {
+    private Button createButton(String text, final String clubURL) //creates a new button
+    {
         Button clubButton = new Button(getApplicationContext());
-        //button.setLayoutParams(new RelativeLayout.LayoutParams(150,150));
         clubButton.setText(text);
-        //clubButton.setLayoutParams(new;
         clubButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                prepareClubPage(clubURL);
+                prepareClubPage(clubURL);//this method is fired when the new Button is clicked
             }
         });
-        table.addView(clubButton);
+        table.addView(clubButton); //adds button to the table
         return clubButton;
-    }
+    }//end method createButton
 
-    public void prepareClubPage(String clubURL)
+    public void prepareClubPage(String clubURL)//prepares the club page
     {
-        //new searchWeb("POST_CLUB", clubURL).execute();
-        //setContentView(R.layout.club_page);
-        Intent sendtoClubPage = new Intent(MainActivity.this,clubPage.class);
-        sendtoClubPage.putExtra("URL", clubURL);
-        startActivity(sendtoClubPage);
-    }
+        Intent sendtoClubPage = new Intent(MainActivity.this,clubPage.class); //new intent to switch activities
+        sendtoClubPage.putExtra("URL", clubURL);//sends the url of the user's page under the key 'URL'
+        startActivity(sendtoClubPage);//begins clubPage.java activity
+    }//end method prepareClubPage
 
-}
-
-
-}
+}//end class searchWeb
+}//end class MainActivity
