@@ -27,6 +27,16 @@ public class clubPage extends AppCompatActivity//club page for user. Displays cl
     TextView recentPostDesc;
     TextView activityDate;
 
+    Button saveButton;
+    boolean willRemove;
+
+    String clubName;
+
+    user currentUser = MainActivity.currentUser;
+
+    ArrayList<ClubSave> userClubs;
+    ClubSave thisClub;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) //runs when clubPage is started
     {
@@ -39,9 +49,54 @@ public class clubPage extends AppCompatActivity//club page for user. Displays cl
         clubNameView = findViewById(R.id.clubName);//The club name
         recentPostDesc = findViewById(R.id.recentPost);//the description of their recent post
         activityDate = findViewById(R.id.activityDate);//last activity date
+        saveButton = findViewById(R.id.saveButton);
+
+        saveButton.setVisibility(View.INVISIBLE);
+
+        currentUser = MainActivity.currentUser;
+
 
         new searchWeb("hhrv", clubURL).execute(); //starts a new web search for any element under class 'hhrv' with the URL from MainActivity intent
     }//end method onCreate
+
+    private void setUpSaveFunctionality() {
+        thisClub = new ClubSave(clubName, clubURL);
+        userClubs = currentUser.getUsersClubs();
+
+        if(userClubs.contains(thisClub)) {
+            //currentUser.removeClub(thisClub);
+            saveButton.setText("remove club");
+            willRemove = true;
+        }
+        else
+        {
+            //currentUser.addClub(thisClub);
+            saveButton.setText("save club");
+            willRemove = false;
+        }
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveClub();
+            }
+        });
+    }
+
+    private void saveClub()
+    {
+        if(willRemove == false) {
+            currentUser.addClub(thisClub);
+            saveButton.setText("remove club");
+            willRemove = true;
+        }
+        else
+        {
+            currentUser.removeClub(thisClub);
+            saveButton.setText("save club");
+            willRemove = false;
+        }
+    }
 
     public class searchWeb extends AsyncTask<Void, Void, Void> //web scraper
     {
@@ -85,7 +140,8 @@ public class clubPage extends AppCompatActivity//club page for user. Displays cl
             super.onPostExecute(aVoid);
             if(directive == "hhrv")//if scraper is searching for elements under class 'hhrv' --
             {
-                clubNameView.setText(targets.get(0).text()); //set the club name to the first element found
+                clubName = targets.get(0).text();
+                clubNameView.setText(clubName); //set the club name to the first element found
                 new searchWeb("showpics", clubURL).execute(); //start another web search for class 'showpics' under clubURL
             }
             if(directive == "showpics")//if scraper is searching for elements under class 'showpics' --
@@ -97,6 +153,8 @@ public class clubPage extends AppCompatActivity//club page for user. Displays cl
             if(directive == "sb")//if scraper is searching for elements under class 'sb' --
             {
                 recentPostDesc.setText(targets.get(0).text());//set recentPostDesc to first element found
+                saveButton.setVisibility(View.VISIBLE);
+                setUpSaveFunctionality();
             }
         }//end method onPostExecute
     }//end class searchPage

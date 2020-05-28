@@ -32,10 +32,18 @@
         <TextView
             android:id="@+id/activityDate"
             android:layout_width="match_parent"
-            android:layout_height="71dp"
+            android:layout_height="109dp"
             android:text="Last Active: ..."
             android:textSize="28sp"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="..."
+            android:visibility="invisible" />
+
     </LinearLayout>
 
 </LinearLayout>

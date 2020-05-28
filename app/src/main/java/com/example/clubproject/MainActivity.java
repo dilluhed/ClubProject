@@ -27,12 +27,13 @@ public class MainActivity extends AppCompatActivity //Main search page
     LinearLayout layout;
     TableLayout table;
     ScrollView scroll;
+    Button userButton;
 
     EditText schoolInput;
 
     final String BASE_URL = "https://searchusers.com/search/"; //website that app is scraping through
 
-
+    public static user currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) //runs when MainActivity has started
@@ -43,12 +44,16 @@ public class MainActivity extends AppCompatActivity //Main search page
         search = findViewById(R.id.search); //search button
         layout = findViewById(R.id.mainLayout); //main layout of the activity
         scroll = findViewById(R.id.scroll); //the scrollView that table are placed on
+        userButton = findViewById(R.id.userButton);
 
         schoolInput = findViewById(R.id.schoolInput); //user inputs school name here
 
         table = findViewById(R.id.table); //the table view that is placed under scroll; buttons are put HERE
 
+        currentUser = new user();
+
         search.setOnClickListener(new View.OnClickListener()  //sets method to fire when search is clicked
+
         {
             @Override
             public void onClick(View v) //method fired when search button is clicked
@@ -69,6 +74,14 @@ public class MainActivity extends AppCompatActivity //Main search page
 
                 new searchWeb("timg",BASE_URL + inputText + "+high+school").execute(); //starts a searchWeb object; search for class 'timg', under the url
             }//end method onClick
+        });
+
+        userButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendtoUserPage = new Intent(MainActivity.this,UserPage.class); //new intent to switch activities
+                startActivity(sendtoUserPage);//begins clubPage.java activity
+            }
         });
 
 
