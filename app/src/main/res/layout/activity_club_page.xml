@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E9F1F4"
     tools:context=".clubPage">
 
     <LinearLayout
@@ -15,24 +16,41 @@
         <TextView
             android:id="@+id/clubName"
             android:layout_width="match_parent"
-            android:layout_height="312dp"
-            android:fontFamily="casual"
+            android:layout_height="wrap_content"
+            android:background="#E9F1F4"
+            android:fontFamily="@font/open_sans"
             android:text="Loading Club..."
             android:textAlignment="center"
             android:textSize="40sp" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="#E9F1F4" />
 
         <TextView
             android:id="@+id/recentPost"
             android:layout_width="match_parent"
             android:layout_height="141dp"
+            android:background="#E9F1F4"
+            android:fontFamily="@font/open_sans"
             android:text="Loading Recent Post..."
             android:textAlignment="center"
             android:textSize="20sp" />
 
+        <View
+            android:id="@+id/divider5"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#E9F1F4" />
+
         <TextView
             android:id="@+id/activityDate"
             android:layout_width="match_parent"
-            android:layout_height="71dp"
+            android:layout_height="wrap_content"
+            android:background="#E9F1F4"
+            android:fontFamily="@font/open_sans"
             android:text="Last Active: ..."
             android:textSize="28sp"
             android:textStyle="bold" />

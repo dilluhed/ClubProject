@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FFF"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -15,23 +16,65 @@
         android:orientation="vertical"
         tools:visibility="visible">
 
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="#FFF" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FFF"
+            android:fontFamily="@font/baloo"
+            android:text="Club Findr and Updatr"
+            android:textSize="30sp" />
+
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="#FFF" />
+
+        <TextView
+            android:id="@+id/prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFF"
+            android:fontFamily="@font/open_sans"
+            android:text="Enter School Name:"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
         <EditText
             android:id="@+id/schoolInput"
             android:layout_width="match_parent"
-            android:layout_height="74dp"
+            android:layout_height="wrap_content"
             android:ems="10"
             android:fontFamily="sans-serif-black"
             android:inputType="textPersonName"
-            android:text="Enter School" />
+            android:textColorHighlight="#802196F3"
+            android:textColorLink="#2196F3"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#FFF" />
 
         <Button
             android:id="@+id/search"
-            android:layout_width="397dp"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="6dp"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="-54dp"
+            android:backgroundTint="#4A6FA5"
+            android:fontFamily="@font/open_sans"
             android:text="@android:string/search_go"
+            android:textColor="#FFFFFF"
             android:translationY="-50dp" />
 
         <ScrollView
