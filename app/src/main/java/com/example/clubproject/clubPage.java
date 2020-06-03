@@ -3,6 +3,7 @@ package com.example.clubproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -13,11 +14,15 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class clubPage extends AppCompatActivity//club page for user. Displays club name, recent post, and last date of recent activity
@@ -36,6 +41,10 @@ public class clubPage extends AppCompatActivity//club page for user. Displays cl
 
     ArrayList<ClubSave> userClubs;
     ClubSave thisClub;
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String TEXT = "text";
+    public static final String SWITCH1 = "switch1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) //runs when clubPage is started
@@ -96,6 +105,17 @@ public class clubPage extends AppCompatActivity//club page for user. Displays cl
             saveButton.setText("save club");
             willRemove = false;
         }
+        doSaveData();
+    }
+
+    private void doSaveData()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(currentUser.getUsersClubs());
+        editor.putString("task list", json);
+        editor.apply();
     }
 
     public class searchWeb extends AsyncTask<Void, Void, Void> //web scraper

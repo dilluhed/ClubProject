@@ -3,6 +3,7 @@ package com.example.clubproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -14,11 +15,15 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity //Main search page
@@ -34,6 +39,10 @@ public class MainActivity extends AppCompatActivity //Main search page
     final String BASE_URL = "https://searchusers.com/search/"; //website that app is scraping through
 
     public static user currentUser;
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String TEXT = "text";
+    public static final String SWITCH1 = "switch1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) //runs when MainActivity has started
@@ -51,6 +60,7 @@ public class MainActivity extends AppCompatActivity //Main search page
         table = findViewById(R.id.table); //the table view that is placed under scroll; buttons are put HERE
 
         currentUser = new user();
+        doloadData();
 
         search.setOnClickListener(new View.OnClickListener()  //sets method to fire when search is clicked
 
@@ -153,6 +163,24 @@ public class MainActivity extends AppCompatActivity //Main search page
         sendtoClubPage.putExtra("URL", clubURL);//sends the url of the user's page under the key 'URL'
         startActivity(sendtoClubPage);//begins clubPage.java activity
     }//end method prepareClubPage
-
 }//end class searchWeb
+
+
+
+    private void doloadData()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("task list", null);
+        Type type = new TypeToken<ArrayList<ClubSave>>(){}.getType();
+        ArrayList<ClubSave> loadclub  = gson.fromJson(json, type);
+        if(loadclub == null)
+        {
+            currentUser.loadClubs(new ArrayList<ClubSave>());
+        }
+        else {
+            currentUser.loadClubs(loadclub);
+        }
+    }
+
 }//end class MainActivity

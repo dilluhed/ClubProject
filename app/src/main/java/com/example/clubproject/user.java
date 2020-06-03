@@ -7,7 +7,7 @@ public class user
     private ArrayList<ClubSave> usersClubs;
     public user()
     {
-        usersClubs = new ArrayList<ClubSave>();
+       // usersClubs = new ArrayList<ClubSave>();
     }
     public ArrayList<ClubSave> getUsersClubs() {
         return usersClubs;
@@ -19,5 +19,10 @@ public class user
     public void removeClub(ClubSave club)
     {
         usersClubs.remove(club);
+    }
+
+    public void loadClubs(ArrayList<ClubSave> loadedClubs)
+    {
+        this.usersClubs = loadedClubs;
     }
 }
